@@ -217,13 +217,16 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   vector<string> mu_triggers;
 
   if(!runOverData) {
-    el_triggers.push_back("any");
-    mu_triggers.push_back("any");
+    //el_triggers.push_back("any");
+    //mu_triggers.push_back("any");
+    el_triggers.push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v*");
+    mu_triggers.push_back("HLT_IsoMu22_v*");
+    mu_triggers.push_back("HLT_IsoTkMu22_v*");
   }
   else if(runOverData) {
-    el_triggers.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v*");
-    mu_triggers.push_back("HLT_IsoMu20_v*");
-    mu_triggers.push_back("HLT_IsoTkMu20_v*");
+    el_triggers.push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v*");
+    mu_triggers.push_back("HLT_IsoMu22_v*");
+    mu_triggers.push_back("HLT_IsoTkMu22_v*");
     if(dataset_flag<3) {
       //cout << "is_DL set false" << endl;
       is_DL=false;
@@ -233,8 +236,6 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       is_SL=false;
     }
   }
-
-
 
   if(leptonSelections.size()==0 && ((!runOverData)||dataset_flag<3)){
     leptonSelections.push_back(new VertexSelection());
@@ -257,20 +258,26 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
   vector<string> elmu_triggers;
 
   // MC triggers ->do not work yet
+
   if(!runOverData) {
-    elel_triggers.push_back("any");
-    mumu_triggers.push_back("any");
-    elmu_triggers.push_back("any");
+    //elel_triggers.push_back("any");
+    //mumu_triggers.push_back("any");
+    //elmu_triggers.push_back("any");
+    elel_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
+    mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
+    elmu_triggers.push_back("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
   }
   // data triggers
   else {
-    elel_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
+    elel_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*");
     mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*");
     mumu_triggers.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*");
-    elmu_triggers.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
-    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*");
+    elmu_triggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
   }
-
+  
 
   if(dileptonSelections.size()==0 && ((!runOverData)||dataset_flag>2)){
     dileptonSelections.push_back(new VertexSelection());
@@ -459,7 +466,7 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
 
 
   bool compare = false;
-  /*if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+  /*if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
     cout << "####################################################### event " << event << " #############################" << endl;
     compare=true;
   }*/
@@ -640,16 +647,19 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       jet1_pt=input_DL.selectedJetsLooseDL.at(0).pt();
       jet1_CSVv2=MiniAODHelper::GetJetCSV(input_DL.selectedJetsLooseDL.at(0));
       bool jetmatched = false;
-      for( auto rawJet: input.rawJets){
+      for( auto rawJet: input_DL.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input_DL.selectedJetsLooseDL.at(0).p4()) < 0.01 ){
-	  float jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	    //double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::NA,true,false) ;
+	    double jet1_JES = 1.0;
 	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 	  
 
 
-	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false) / jet1_JES ;
+	    //	  double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESup,true,false)/jet1_JES ;
+	     double JESup =  1.0 ;
 	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false) / jet1_JES;
+	    //double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESdown,true,false)/jet1_JES;
+	     double JESdown =   1.0;
 	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
 	  jet1_JecSF = jet1_JES;
@@ -693,14 +703,17 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       bool jetmatched = false;
       for( auto rawJet: input.rawJets){
 	if( BoostedUtils::DeltaR(rawJet.p4(),input.selectedJets.at(0).p4()) < 0.01 ){
-	  float jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,true,false) ;
+	    //double jet1_JES = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::NA,true,false) ;
+	    double jet1_JES = 1.0;
 	  //float jet1_JER = helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::NA,false,true) ;
 	  
 
 
-	  float JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESup,true,false) / jet1_JES ;
+	  //double JESup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESup,true,false)/jet1_JES ;
+	  double JESup =   1.0;
 	  //float JERup =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERup,false,true) ;
-	  float JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JESdown,true,false) / jet1_JES;
+	  //double JESdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, input.genJets, sysType::JESdown,true,false)/jet1_JES;
+	  double JESdown =  1.0;
 	  //float JERdown =  helper.GetJetCorrectionFactor(rawJet,input.iEvent, input.iSetup, sysType::JERdown,false,true);
 
 	  jet1_JecSF = jet1_JES;
@@ -736,12 +749,13 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
       if(helper.PassesCSV(*jet,'M')) n_btags++;
     }
   }
-  /*
-  if(event==510981 || int(event)==510981 || event==499906 || int(event)==499906) {
+  
+  /*if(event==3875954 || int(event)==3875954 || event==3897814 || int(event)==3897814) {
     for(size_t i=0;i<input.selectedJetsLooseDL.size();i++){
       cout << "############# Jet " << i << " ##############" << endl;
-      cout << "Pt: " << input.selectedJetsLooseDL.at(i).pt() << endl;
-      cout << "Eta: " << input.selectedJetsLooseDL.at(i).eta() << endl;
+      cout << "Pt: " << input.selectedJetsLoose.at(i).pt() << endl;
+      cout << "Eta: " << input.selectedJetsLoose.at(i).eta() << endl;
+      cout << "JER? " << helper.jetdPtMatched(input.selectedJetsLoose.at(i)) << endl;
       //cout << "Jet CSV: " << MiniAODHelper::GetJetCSV(input.selectedJetsLooseDL.at(i)) << endl;
     }
   } */
@@ -863,9 +877,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     q2upup=input_DL.weightsDL.at("Weight_muRupmuFup");
     q2downdown=input_DL.weightsDL.at("Weight_muRdownmuFdown");
     //pdfup=input_DL.weightsDL.at("Weight_NNPDFid260067");
-    pdfup=input_DL.weightsDL.at("Weight_CT14nlo13100_up");
+    pdfup=input_DL.weightsDL.at("Weight_NNPDF30_nlo_as_0118260000_up");
     //pdfdown=input_DL.weightsDL.at("Weight_NNPDFid260005");
-    pdfdown=input_DL.weightsDL.at("Weight_CT14nlo13100_down");
+    pdfdown=input_DL.weightsDL.at("Weight_NNPDF30_nlo_as_0118260000_down");
     //lepSF=input_DL.weightsDL.at("Weight_LeptonSF");
     lepSFid=input_DL.weightsDL.at("Weight_ElectronSFID")*input_DL.weightsDL.at("Weight_MuonSFID");
     lepSFiso=input_DL.weightsDL.at("Weight_ElectronSFIso")*input_DL.weightsDL.at("Weight_MuonSFIso");
@@ -906,9 +920,9 @@ void Synchronizer::DumpSyncExe2(const InputCollections& input,
     q2downdown=input.weights.at("Weight_muRdownmuFdown");
 
     //pdfup=input.weights.at("Weight_NNPDFid260067");
-    pdfup=input.weights.at("Weight_CT14nlo13100_up");
+    pdfup=input.weights.at("Weight_NNPDF30_nlo_as_0118260000_up");
     //pdfdown=input.weights.at("Weight_NNPDFid260005");
-    pdfdown=input.weights.at("Weight_CT14nlo13100_down");
+    pdfdown=input.weights.at("Weight_NNPDF30_nlo_as_0118260000_down");
 
     //lepSF=input.weights.at("Weight_LeptonSF");
     lepSFid=input.weights.at("Weight_ElectronSFID")*input.weights.at("Weight_MuonSFID");
